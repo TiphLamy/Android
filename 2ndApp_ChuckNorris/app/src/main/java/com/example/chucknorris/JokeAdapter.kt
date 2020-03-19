@@ -10,7 +10,8 @@ class JokeAdapter(var listDeJoke: List<String>): RecyclerView.Adapter<JokeAdapte
     class JokeViewHolder(val textView: TextView): RecyclerView.ViewHolder(textView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): JokeViewHolder {
-        val textView = TextView(parent.context)
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val textView = layoutInflater.inflate(R.layout.joke_layout,parent,false) as TextView
         return JokeViewHolder(textView)
     }
 
@@ -22,9 +23,5 @@ class JokeAdapter(var listDeJoke: List<String>): RecyclerView.Adapter<JokeAdapte
         holder.textView.text = listDeJoke[position]
     }
 
-    fun setJokes(newJokes: List<String>) {
-        listDeJoke = newJokes
-        notifyDataSetChanged()
-    }
 
 }
