@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
         val recyclerView = findViewById<RecyclerView>(R.id.Recycler)
         val layout = LinearLayoutManager(recyclerView.context)
-        
+
         
 
 
