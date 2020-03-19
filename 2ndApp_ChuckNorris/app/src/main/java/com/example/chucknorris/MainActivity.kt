@@ -2,9 +2,9 @@ package com.example.chucknorris
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.serialization.json.Json
 
 
 class MainActivity : AppCompatActivity() {
@@ -14,7 +14,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         var jokes = ListOfJokes.list
-        //Log.i("logcat",list.toString())
 
         val recyclerView = findViewById<RecyclerView>(R.id.Recycler)
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
