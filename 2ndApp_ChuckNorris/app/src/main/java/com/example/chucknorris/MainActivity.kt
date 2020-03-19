@@ -13,11 +13,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val list = ListOfJokes.list
+        //val list = ListOfJokes.list
         //Log.i("logcat",list.toString())
 
-        val viewManager = LinearLayoutManager(this)
-        val recyclerView = findViewById<RecyclerView>(R.id.RecyclerView)
+        val recyclerView = findViewById<RecyclerView>(R.id.Recycler)
+        val layout = LinearLayoutManager(recyclerView.context)
+        
         
 
 
