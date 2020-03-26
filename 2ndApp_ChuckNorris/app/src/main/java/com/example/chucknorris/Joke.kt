@@ -10,4 +10,5 @@ data class Joke(val categories: List<String>,
                 val id: String,
                 @SerialName("updated_at") val updatedAt: String,
                 val url: String,
-                val value: String){}
+                val value: String
+                )

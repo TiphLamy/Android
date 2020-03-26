@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class JokeAdapter(var listDeJoke: List<String>): RecyclerView.Adapter<JokeAdapter.JokeViewHolder>() {
+class JokeAdapter(var listDeJoke: List<Joke>): RecyclerView.Adapter<JokeAdapter.JokeViewHolder>() {
 
     class JokeViewHolder(val textView: TextView): RecyclerView.ViewHolder(textView)
 
@@ -20,7 +20,7 @@ class JokeAdapter(var listDeJoke: List<String>): RecyclerView.Adapter<JokeAdapte
     }
 
     override fun onBindViewHolder(holder: JokeViewHolder, position: Int) {
-        holder.textView.text = listDeJoke[position]
+        holder.textView.text = listDeJoke[position].value
     }
 
 

@@ -1,4 +1,4 @@
-package com.gopro.chucknorrisjokes
+package com.example.chucknorris
 
 import com.example.chucknorris.Joke
 import kotlinx.serialization.json.Json
