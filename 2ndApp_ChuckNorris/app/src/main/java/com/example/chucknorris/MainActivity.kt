@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
                 value=this.toString())
             return listOf(joke)
         }
-        
+
         var listOfJokes = ListOfJokes.list.string2Joke()
 
         val recyclerView = findViewById<RecyclerView>(R.id.Recycler)
