@@ -4,6 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.SingleObserver
+import io.reactivex.internal.operators.single.SingleInternalHelper.toObservable
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxkotlin.toObservable
 import kotlinx.serialization.json.Json
 
 
@@ -31,6 +35,11 @@ class MainActivity : AppCompatActivity() {
             recyclerView.adapter!!.notifyDataSetChanged()
         }
 
-
+        val jokeService = JokeApiServiceFactory.createJokeApiService()
+        val joke = jokeService.giveMeAJoke()
+            .subscribeBy (
+                onError = { error("couldn't print joke")},
+                onSuccess = { TODO("What a joke  $jokeService")}
+            )
     }
 }
