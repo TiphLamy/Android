@@ -2,13 +2,11 @@ package com.example.chucknorris
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.reactivex.SingleObserver
-import io.reactivex.internal.operators.single.SingleInternalHelper.toObservable
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.rxkotlin.toObservable
-import kotlinx.serialization.json.Json
+import io.reactivex.schedulers.Schedulers
 
 
 class MainActivity : AppCompatActivity() {
@@ -37,9 +35,11 @@ class MainActivity : AppCompatActivity() {
 
         val jokeService = JokeApiServiceFactory.createJokeApiService()
         val joke = jokeService.giveMeAJoke()
+            .subscribeOn(Schedulers.io())
             .subscribeBy (
                 onError = { error("couldn't print joke")},
-                onSuccess = { TODO("What a joke  $jokeService")}
+                onSuccess = { joke: Joke -> TODO("What a joke  $joke")}
             )
+        //Log.i("logcat",joke.toString())
     }
 }
