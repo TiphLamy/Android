@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
@@ -34,12 +35,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         val jokeService = JokeApiServiceFactory.createJokeApiService()
-        val joke = jokeService.giveMeAJoke()
+        val disposable = CompositeDisposable()
+
+        disposable.add(jokeService.giveMeAJoke()
             .subscribeOn(Schedulers.io())
             .subscribeBy (
-                onError = { error("couldn't print joke")},
-                onSuccess = { joke: Joke -> TODO("What a joke  $joke")}
+                onError = { Log.e("TAG","couldn't print joke",it)},
+                onSuccess = { joke: Joke -> Log.i("TAG","What a joke  $joke")}
             )
-        //Log.i("logcat",joke.toString())
+        )
+        disposable.dispose()
     }
 }
