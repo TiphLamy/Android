@@ -3,13 +3,16 @@ package com.example.chucknorris
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View.*
 import android.widget.Button
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,10 +24,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val recyclerView = findViewById<RecyclerView>(R.id.Recycler)
+        val button = findViewById<Button>(R.id.button)
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+
         val jokeService = JokeApiServiceFactory.createJokeApiService()
         val joke = jokeService.giveMeAJoke()
         val jokeAdapter = JokeAdapter(mutableListOf())
-        val button = findViewById<Button>(R.id.button)
+
 
         compositeDisposable.add(joke
             .subscribeOn(Schedulers.io())
@@ -35,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        
+
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
         recyclerView.adapter = jokeAdapter
 
@@ -44,6 +50,9 @@ class MainActivity : AppCompatActivity() {
             compositeDisposable.add(joke
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .delay(3,TimeUnit.SECONDS)
+                .doOnSubscribe { progressBar.visibility = VISIBLE }
+                .doOnTerminate { progressBar.visibility = INVISIBLE }
                 .subscribeBy (
                     onError = { Log.e("TAG","couldn't print joke",it)},
                     onSuccess = {jokeAdapter.setJokes(it)}
