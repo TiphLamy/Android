@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class JokeAdapter(var listDeJoke: List<Joke>): RecyclerView.Adapter<JokeAdapter.JokeViewHolder>() {
+class JokeAdapter(var listDeJoke: MutableList<Joke>): RecyclerView.Adapter<JokeAdapter.JokeViewHolder>() {
 
     class JokeViewHolder(val textView: TextView): RecyclerView.ViewHolder(textView)
 
@@ -23,5 +23,9 @@ class JokeAdapter(var listDeJoke: List<Joke>): RecyclerView.Adapter<JokeAdapter.
         holder.textView.text = listDeJoke[position].value
     }
 
+    fun setJokes(newJokes: Joke) {
+        listDeJoke.add(newJokes)
+        notifyDataSetChanged()
+    }
 
 }
