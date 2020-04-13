@@ -50,12 +50,13 @@ class MainActivity : AppCompatActivity() {
             compositeDisposable.add(joke
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .delay(500,TimeUnit.MILLISECONDS,AndroidSchedulers.mainThread())
+                .repeat(10)
+                .delay(1,TimeUnit.SECONDS,AndroidSchedulers.mainThread())
                 .doOnSubscribe { progressBar.visibility = VISIBLE }
                 .doOnTerminate { progressBar.visibility = GONE }
                 .subscribeBy (
                     onError = { Log.e("TAG","couldn't print joke",it)},
-                    onSuccess = {jokeAdapter.setJokes(it)}
+                    onNext = {jokeAdapter.setJokes(it)}
                 )
             )
         }

@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Chuck Norris</string>
-    <string name="new_joke">New Joke</string>
+    <string name="new_joke">New Jokes</string>
 </resources>
