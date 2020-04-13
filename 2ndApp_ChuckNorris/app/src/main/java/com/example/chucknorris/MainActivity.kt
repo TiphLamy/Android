@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View.*
-import android.widget.Button
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,20 +23,28 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val recyclerView = findViewById<RecyclerView>(R.id.Recycler)
-        val button = findViewById<Button>(R.id.button)
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
 
+        val jokeList = mutableListOf<Joke>()
         val jokeService = JokeApiServiceFactory.createJokeApiService()
         val joke = jokeService.giveMeAJoke()
-        val jokeAdapter = JokeAdapter(mutableListOf())
-
+        val jokeAdapter = JokeAdapter(jokeList) {
+            compositeDisposable
+            if((recyclerView.computeVerticalScrollOffset()+recyclerView.computeHorizontalScrollExtent()) == it.itemCount-1)
+                compositeDisposable
+        }
 
         compositeDisposable.add(joke
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .repeat(10)
+            .delay(1,TimeUnit.SECONDS,AndroidSchedulers.mainThread())
+            .doOnSubscribe { progressBar.visibility = VISIBLE }
+            .doOnTerminate { progressBar.visibility = GONE }
             .subscribeBy (
                 onError = { Log.e("TAG","couldn't print joke",it)},
-                onSuccess = {jokeAdapter.setJokes(it)}
+                onNext = { newJoke: Joke -> jokeList.add(newJoke)},
+                onComplete = { jokeAdapter.setJokes(jokeList)}
             )
         )
 
@@ -45,21 +52,6 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
         recyclerView.adapter = jokeAdapter
 
-
-        button.setOnClickListener{
-            compositeDisposable.add(joke
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .repeat(10)
-                .delay(1,TimeUnit.SECONDS,AndroidSchedulers.mainThread())
-                .doOnSubscribe { progressBar.visibility = VISIBLE }
-                .doOnTerminate { progressBar.visibility = GONE }
-                .subscribeBy (
-                    onError = { Log.e("TAG","couldn't print joke",it)},
-                    onNext = {jokeAdapter.setJokes(it)}
-                )
-            )
-        }
     }
 
     override fun onDestroy() {
