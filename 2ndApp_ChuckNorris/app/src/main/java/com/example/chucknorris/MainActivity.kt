@@ -11,6 +11,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.builtins.list
+import kotlinx.serialization.json.Json
 import java.util.concurrent.TimeUnit
 
 
@@ -25,6 +28,9 @@ class MainActivity : AppCompatActivity() {
     private val joke = jokeService.giveMeAJoke()
     private lateinit var jokeAdapter: JokeAdapter
 
+    private var jokeState = "jokeList save"
+    private lateinit var jokeCurrentSave: KSerializer<List<Joke>>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -36,7 +42,21 @@ class MainActivity : AppCompatActivity() {
             showJoke()
         }
 
-        jokeAdapter.onBottomReached()
+        jokeCurrentSave = Joke.serializer().list // serialization of list of Joke
+
+        if(savedInstanceState == null) {
+            jokeAdapter.onBottomReached()
+        }
+        else {
+            savedInstanceState.getString(jokeState)?.let { // if jokeState not null else ignore
+                Json.parse(jokeCurrentSave, it)
+            }?.let {
+                jokeList.addAll(it)
+            }
+            jokeAdapter.setJokes(jokeList)
+            // equivalent to:
+            //  jokeList.addAll( Json.parse(jokeCurrentSave, savedInstanceState.getString(jokeState))) if none are null
+        }
 
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
         recyclerView.adapter = jokeAdapter
@@ -57,6 +77,12 @@ class MainActivity : AppCompatActivity() {
                 onComplete = { jokeAdapter.setJokes(jokeList)}
             )
         )
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(jokeState, // put jokeCurrentSave into jokeState (String)
+                            Json.stringify(jokeCurrentSave,jokeList)) // add jokeList in jokeCurrentSave and cast string type
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroy() {
