@@ -17,23 +17,33 @@ import java.util.concurrent.TimeUnit
 class MainActivity : AppCompatActivity() {
 
     private val compositeDisposable = CompositeDisposable()
+    lateinit var recyclerView: RecyclerView
+    lateinit var progressBar: ProgressBar
+
+    private val jokeList = mutableListOf<Joke>()
+    private val jokeService = JokeApiServiceFactory.createJokeApiService()
+    private val joke = jokeService.giveMeAJoke()
+    private lateinit var jokeAdapter: JokeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.Recycler)
-        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        recyclerView = findViewById(R.id.Recycler)
+        progressBar = findViewById(R.id.progressBar)
 
-        val jokeList = mutableListOf<Joke>()
-        val jokeService = JokeApiServiceFactory.createJokeApiService()
-        val joke = jokeService.giveMeAJoke()
-        val jokeAdapter = JokeAdapter(jokeList) {
-            compositeDisposable
-            if((recyclerView.computeVerticalScrollOffset()+recyclerView.computeHorizontalScrollExtent()) == it.itemCount-1)
-                compositeDisposable
+        jokeAdapter = JokeAdapter {
+            showJoke()
         }
 
+        jokeAdapter.onBottomReached()
+
+        recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
+        recyclerView.adapter = jokeAdapter
+
+    }
+
+    private fun showJoke(){
         compositeDisposable.add(joke
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -47,11 +57,6 @@ class MainActivity : AppCompatActivity() {
                 onComplete = { jokeAdapter.setJokes(jokeList)}
             )
         )
-
-
-        recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
-        recyclerView.adapter = jokeAdapter
-
     }
 
     override fun onDestroy() {

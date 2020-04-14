@@ -5,8 +5,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class JokeAdapter(val listDeJoke: MutableList<Joke>,
-                  val onBottomReached: (JokeAdapter) -> Unit = {}): RecyclerView.Adapter<JokeAdapter.JokeViewHolder>() {
+class JokeAdapter(val onBottomReached: () -> Unit = {}): RecyclerView.Adapter<JokeAdapter.JokeViewHolder>() {
+
+    private val listDeJoke = mutableListOf<Joke>()
 
     class JokeViewHolder(val textView: TextView): RecyclerView.ViewHolder(textView)
 
@@ -22,9 +23,12 @@ class JokeAdapter(val listDeJoke: MutableList<Joke>,
 
     override fun onBindViewHolder(holder: JokeViewHolder, position: Int) {
         holder.textView.text = listDeJoke[position].value
+        if(position == itemCount-1)
+            onBottomReached()
     }
 
     fun setJokes(newJokes: MutableList<Joke>) {
+        listDeJoke.clear()
         listDeJoke.addAll(newJokes)
         notifyDataSetChanged()
     }
