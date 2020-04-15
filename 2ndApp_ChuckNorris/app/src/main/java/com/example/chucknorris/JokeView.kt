@@ -9,9 +9,7 @@ class JokeView @JvmOverloads constructor(context: Context) :
     ConstraintLayout(context) {
     init {
         val layoutInflater = LayoutInflater.from(context)
-        val jokeView = layoutInflater.inflate(R.layout.joke_layout,this,false)
-
-        addView(jokeView)
+        val jokeView = layoutInflater.inflate(R.layout.joke_layout,this,true)
     }
 
     data class Model(val jokeText: String)
