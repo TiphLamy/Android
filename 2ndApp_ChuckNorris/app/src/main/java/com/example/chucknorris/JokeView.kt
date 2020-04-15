@@ -2,6 +2,7 @@ package com.example.chucknorris
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import kotlinx.android.synthetic.main.joke_layout.view.*
 
@@ -17,4 +18,10 @@ class JokeView @JvmOverloads constructor(context: Context) :
     fun setupView(model: Model){
         jokes_textView.text = model.jokeText
     }
+
+//    if() //Stared
+//        imageView.setImageResource(R.drawable.favorite)
+//    else
+//        imageView.setImageresource(R.drawable.unfavorite)
+
 }

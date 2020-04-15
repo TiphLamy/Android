@@ -20,8 +20,8 @@ import java.util.concurrent.TimeUnit
 class MainActivity : AppCompatActivity() {
 
     private val compositeDisposable = CompositeDisposable()
-    lateinit var recyclerView: RecyclerView
-    lateinit var progressBar: ProgressBar
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var progressBar: ProgressBar
 
     private val jokeList = mutableListOf<Joke>()
     private val jokeService = JokeApiServiceFactory.createJokeApiService()
@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private var jokeState = "jokeList save"
     private lateinit var jokeCurrentSave: KSerializer<List<Joke>>
 
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -38,17 +39,18 @@ class MainActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.Recycler)
         progressBar = findViewById(R.id.progressBar)
 
+
         jokeAdapter = JokeAdapter {
             showJoke()
         }
 
-        jokeCurrentSave = Joke.serializer().list // serialization of list of Joke
+        jokeCurrentSave = Joke.serializer().list
 
         if(savedInstanceState == null) {
             jokeAdapter.onBottomReached()
         }
         else {
-            savedInstanceState.getString(jokeState)?.let { // if jokeState not null else ignore
+            savedInstanceState.getString(jokeState)?.let {
                 Json.parse(jokeCurrentSave, it)
             }?.let {
                 jokeList.addAll(it)
@@ -80,8 +82,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(jokeState, // put jokeCurrentSave into jokeState (String)
-                            Json.stringify(jokeCurrentSave,jokeList)) // add jokeList in jokeCurrentSave and cast string type
+        outState.putString(jokeState,
+                            Json.stringify(jokeCurrentSave,jokeList))
         super.onSaveInstanceState(outState)
     }
 
