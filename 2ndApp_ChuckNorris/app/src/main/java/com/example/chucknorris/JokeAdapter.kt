@@ -3,6 +3,7 @@ package com.example.chucknorris
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.joke_layout.view.*
 
@@ -14,9 +15,10 @@ class JokeAdapter(val onBottomReached: () -> Unit = {}): RecyclerView.Adapter<Jo
         Log.i("TAG",viewId)
     }
 
-    private fun setFavoriteListener(viewId: String, view: View){
+    private fun setFavoriteListener(viewId: String, jokeView: JokeView){
         Log.i("TAG",viewId)
-
+        jokeView.stared = !jokeView.stared
+        jokeView.staring(jokeView.stared)
     }
 
     class JokeViewHolder(val jokeView: JokeView): RecyclerView.ViewHolder(jokeView)

@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     private var jokeState = "jokeList save"
     private lateinit var jokeCurrentSave: KSerializer<List<Joke>>
 
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
