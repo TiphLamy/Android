@@ -1,20 +1,17 @@
 package com.example.chucknorris
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class JokeAdapter(val onBottomReached: () -> Unit = {}): RecyclerView.Adapter<JokeAdapter.JokeViewHolder>() {
 
     private val listDeJoke = mutableListOf<Joke>()
 
-    class JokeViewHolder(val textView: TextView): RecyclerView.ViewHolder(textView)
+    class JokeViewHolder(val jokeView: JokeView): RecyclerView.ViewHolder(jokeView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): JokeViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val textView = layoutInflater.inflate(R.layout.joke_layout,parent,false) as TextView
-        return JokeViewHolder(textView)
+        val jokeView = JokeView(parent.context)
+        return JokeViewHolder(jokeView)
     }
 
     override fun getItemCount(): Int {
@@ -22,7 +19,7 @@ class JokeAdapter(val onBottomReached: () -> Unit = {}): RecyclerView.Adapter<Jo
     }
 
     override fun onBindViewHolder(holder: JokeViewHolder, position: Int) {
-        holder.textView.text = listDeJoke[position].value
+        holder.jokeView.setupView(JokeView.Model(listDeJoke[position].value))
         if(position == itemCount-1)
             onBottomReached()
     }
