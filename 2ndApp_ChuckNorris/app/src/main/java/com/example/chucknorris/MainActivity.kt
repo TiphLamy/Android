@@ -86,14 +86,16 @@ class MainActivity : AppCompatActivity() {
             .subscribeBy (
                 onError = { Log.e("TAG","couldn't print joke",it)},
                 onNext = { newJoke: Joke -> jokeList.add(newJoke)},
-                onComplete = { jokeAdapter.setJokes(jokeList)}
+                onComplete = { jokeAdapter.setJokes(jokeList)
+                                jokeList.clear()
+                }
             )
         )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString(jokeState,
-                            Json.stringify(jokeCurrentSave,jokeList))
+                            Json.stringify(jokeCurrentSave,jokeAdapter.listDeJoke))
         super.onSaveInstanceState(outState)
     }
 

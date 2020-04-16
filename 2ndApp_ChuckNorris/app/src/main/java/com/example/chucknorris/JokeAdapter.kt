@@ -39,7 +39,6 @@ class JokeAdapter(val onBottomReached: () -> Unit = {}): RecyclerView.Adapter<Jo
     }
 
     fun setJokes(newJokes: MutableList<Joke>) {
-        listDeJoke.clear()
         listDeJoke.addAll(newJokes)
         notifyDataSetChanged()
     }
