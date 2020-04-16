@@ -5,12 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.joke_layout.view.*
 
-class JokeAdapter(val onBottomReached: () -> Unit = {}): RecyclerView.Adapter<JokeAdapter.JokeViewHolder>() {
+class JokeAdapter(val onBottomReached: () -> Unit = {},
+                  val onShare: (viewId: String) -> Unit = {}): RecyclerView.Adapter<JokeAdapter.JokeViewHolder>() {
 
     val listDeJoke = mutableListOf<Joke>()
 
     private fun setShareListener(viewId: String) {
         Log.i("TAG",viewId)
+        onShare(viewId)
     }
 
     private fun setFavoriteListener(viewId: String, jokeView: JokeView){
@@ -31,7 +33,12 @@ class JokeAdapter(val onBottomReached: () -> Unit = {}): RecyclerView.Adapter<Jo
     }
 
     override fun onBindViewHolder(holder: JokeViewHolder, position: Int) {
-        holder.jokeView.setupView(JokeView.Model(listDeJoke[position].value))
+        holder.jokeView.setupView(
+            JokeView.Model(
+                listDeJoke[position],
+                onShare
+            )
+        )
         holder.jokeView.shareButton.setOnClickListener{ setShareListener(listDeJoke[position].id) }
         holder.jokeView.saveButton.setOnClickListener { setFavoriteListener(listDeJoke[position].id, holder.jokeView) }
         if(position == itemCount-1)

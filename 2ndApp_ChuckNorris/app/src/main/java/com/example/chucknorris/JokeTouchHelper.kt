@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class JokeTouchHelper(
     private val onJokeRemoved: (position: Int) -> Unit = {},
-    private val onItemMoved: (Int, Int) -> Unit = { oldPosition: Int, targer: Int -> }
+    private val onItemMoved: (Int, Int) -> Unit = { _: Int, _: Int -> }
 ) : ItemTouchHelper(
     object : ItemTouchHelper.SimpleCallback(
         UP or DOWN,

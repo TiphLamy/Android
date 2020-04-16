@@ -1,5 +1,6 @@
 package com.example.chucknorris
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.joke_layout.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.json.Json
@@ -36,20 +38,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         recyclerView = findViewById(R.id.Recycler)
         progressBar = findViewById(R.id.progressBar)
 
 
-        jokeAdapter = JokeAdapter {
-            showJoke()
-        }
+        jokeAdapter = JokeAdapter(
+            {showJoke()},
+            { viewId: String -> share(viewId)}
+        )
 
         jokeCurrentSave = Joke.serializer().list
-
-        if(savedInstanceState == null) {
+        if(savedInstanceState == null)
             jokeAdapter.onBottomReached()
-        }
         else {
             savedInstanceState.getString(jokeState)?.let {
                 Json.parse(jokeCurrentSave, it)
@@ -66,13 +66,11 @@ class MainActivity : AppCompatActivity() {
             {position: Int -> jokeAdapter.onJokeRemoved(position)},
             {oldPosition: Int, target: Int -> jokeAdapter.onItemMoved(oldPosition,target)}
         )
-
         jokeTouch.attachToRecyclerView(recyclerView)
 
 
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
         recyclerView.adapter = jokeAdapter
-
     }
 
     private fun showJoke(){
@@ -86,16 +84,31 @@ class MainActivity : AppCompatActivity() {
             .subscribeBy (
                 onError = { Log.e("TAG","couldn't print joke",it)},
                 onNext = { newJoke: Joke -> jokeList.add(newJoke)},
-                onComplete = { jokeAdapter.setJokes(jokeList)
-                                jokeList.clear()
+                onComplete = {
+                    jokeAdapter.setJokes(jokeList)
+                    jokeList.clear()
                 }
             )
         )
     }
 
+    private fun share(viewId: String){
+        Log.i("TAG",viewId)
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, jokes_textView.text)
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(jokeState,
-                            Json.stringify(jokeCurrentSave,jokeAdapter.listDeJoke))
+        outState.putString(
+            jokeState,
+            Json.stringify(jokeCurrentSave,jokeAdapter.listDeJoke)
+        )
         super.onSaveInstanceState(outState)
     }
 

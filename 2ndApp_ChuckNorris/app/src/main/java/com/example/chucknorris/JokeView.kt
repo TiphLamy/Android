@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import kotlinx.android.synthetic.main.joke_layout.view.*
 
-class JokeView @JvmOverloads constructor(context: Context) :
+class JokeView constructor(context: Context) :
     ConstraintLayout(context) {
 
     var stared = false
@@ -16,10 +16,12 @@ class JokeView @JvmOverloads constructor(context: Context) :
 
     }
 
-    data class Model(val jokeText: String)
+    data class Model(val joke: Joke,
+                     val shareButton: (viewId: String) -> Unit = {})
 
     fun setupView(model: Model){
-        jokes_textView.text = model.jokeText
+        jokes_textView.text = model.joke.value
+        shareButton.setOnClickListener { model.shareButton(model.joke.id) }
     }
 
     fun staring(stared: Boolean){
