@@ -8,23 +8,27 @@ import kotlinx.android.synthetic.main.joke_layout.view.*
 class JokeView constructor(context: Context) :
     ConstraintLayout(context) {
 
-    var stared = false
-
     init {
         val layoutInflater = LayoutInflater.from(context)
-        val jokeView = layoutInflater.inflate(R.layout.joke_layout,this,true)
-
+        layoutInflater.inflate(R.layout.joke_layout,this,true)
     }
 
-    data class Model(val joke: Joke,
-                     val shareButton: (viewId: String) -> Unit = {})
+    data class Model(var stared: Boolean,
+                     val joke: Joke,
+                     val onShare: (jokeValue: String) -> Unit = {},
+                     val onSave: (jokeValue:String) -> Unit = {})
 
     fun setupView(model: Model){
         jokes_textView.text = model.joke.value
-        shareButton.setOnClickListener { model.shareButton(model.joke.id) }
+        shareButton.setOnClickListener { model.onShare(model.joke.value) }
+        saveButton.setOnClickListener {
+                model.onSave(model.joke.value)
+                model.stared = !model.stared
+                staring(model.stared)
+        }
     }
 
-    fun staring(stared: Boolean){
+    private fun staring(stared: Boolean){
         if(!stared)
             saveButton.setImageResource(R.drawable.unfavorite)
         else

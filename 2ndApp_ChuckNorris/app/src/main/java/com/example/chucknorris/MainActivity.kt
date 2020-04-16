@@ -12,7 +12,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.joke_layout.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.json.Json
@@ -44,7 +43,8 @@ class MainActivity : AppCompatActivity() {
 
         jokeAdapter = JokeAdapter(
             {showJoke()},
-            { viewId: String -> share(viewId)}
+            { jokeValue: String -> share(jokeValue)},
+            { jokeValue: String -> save(jokeValue)  }
         )
 
         jokeCurrentSave = Joke.serializer().list
@@ -92,16 +92,18 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun share(viewId: String){
-        Log.i("TAG",viewId)
+    private fun share(jokeValue: String){
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, jokes_textView.text)
+            putExtra(Intent.EXTRA_TEXT, jokeValue)
             type = "text/plain"
         }
-
         val shareIntent = Intent.createChooser(sendIntent, null)
         startActivity(shareIntent)
+    }
+
+    private fun save(jokeValue: String){
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
