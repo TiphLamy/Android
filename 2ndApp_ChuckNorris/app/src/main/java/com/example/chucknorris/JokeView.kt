@@ -2,7 +2,6 @@ package com.example.chucknorris
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import kotlinx.android.synthetic.main.joke_layout.view.*
 

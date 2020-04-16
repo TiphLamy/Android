@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         recyclerView = findViewById(R.id.Recycler)
         progressBar = findViewById(R.id.progressBar)
 
@@ -59,6 +60,15 @@ class MainActivity : AppCompatActivity() {
             // equivalent to:
             //  jokeList.addAll( Json.parse(jokeCurrentSave, savedInstanceState.getString(jokeState))) if none are null
         }
+
+
+        val jokeTouch = JokeTouchHelper(
+            {position: Int -> jokeAdapter.onJokeRemoved(position)},
+            {oldPosition: Int, target: Int -> jokeAdapter.onItemMoved(oldPosition,target)}
+        )
+
+        jokeTouch.attachToRecyclerView(recyclerView)
+
 
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
         recyclerView.adapter = jokeAdapter

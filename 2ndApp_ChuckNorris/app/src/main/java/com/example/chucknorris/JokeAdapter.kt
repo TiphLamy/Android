@@ -1,15 +1,13 @@
 package com.example.chucknorris
 
 import android.util.Log
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.joke_layout.view.*
 
 class JokeAdapter(val onBottomReached: () -> Unit = {}): RecyclerView.Adapter<JokeAdapter.JokeViewHolder>() {
 
-    private val listDeJoke = mutableListOf<Joke>()
+    val listDeJoke = mutableListOf<Joke>()
 
     private fun setShareListener(viewId: String) {
         Log.i("TAG",viewId)
@@ -44,6 +42,19 @@ class JokeAdapter(val onBottomReached: () -> Unit = {}): RecyclerView.Adapter<Jo
         listDeJoke.clear()
         listDeJoke.addAll(newJokes)
         notifyDataSetChanged()
+    }
+
+    fun onItemMoved(oldPosition: Int, target: Int) {
+        val joke = listDeJoke[oldPosition]
+        listDeJoke.removeAt(oldPosition)
+        listDeJoke.add(target,joke)
+        notifyItemMoved(oldPosition,target)
+    }
+
+    fun onJokeRemoved(position: Int) {
+        listDeJoke.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position,itemCount)
     }
 
 }
