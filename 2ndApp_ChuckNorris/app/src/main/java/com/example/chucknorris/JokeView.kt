@@ -16,15 +16,15 @@ class JokeView constructor(context: Context) :
     data class Model(var stared: Boolean,
                      val joke: Joke,
                      val onShare: (jokeValue: String) -> Unit = {},
-                     val onSave: (jokeValue:String) -> Unit = {})
+                     val onSave: (jokeValue: Joke, stared: Boolean) -> Unit = { _: Joke, _: Boolean -> })
 
     fun setupView(model: Model){
         jokes_textView.text = model.joke.value
         shareButton.setOnClickListener { model.onShare(model.joke.value) }
         saveButton.setOnClickListener {
-                model.onSave(model.joke.value)
-                model.stared = !model.stared
-                staring(model.stared)
+            model.stared = !model.stared
+            model.onSave(model.joke, model.stared)
+            staring(model.stared)
         }
     }
 
@@ -34,5 +34,7 @@ class JokeView constructor(context: Context) :
         else
             saveButton.setImageResource(R.drawable.favorite)
     }
+
+
 
 }

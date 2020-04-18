@@ -1,5 +1,6 @@
 package com.example.chucknorris
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -31,6 +32,8 @@ class MainActivity : AppCompatActivity() {
 
     private var jokeState = "jokeList save"
     private lateinit var jokeCurrentSave: KSerializer<List<Joke>>
+    private var jokeCurrentFavorite = Joke.serializer().list
+    private val jokesSaved = mutableListOf<Joke>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,14 +43,14 @@ class MainActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.Recycler)
         progressBar = findViewById(R.id.progressBar)
 
+        jokeCurrentSave = Joke.serializer().list
 
         jokeAdapter = JokeAdapter(
             {showJoke()},
             { jokeValue: String -> share(jokeValue)},
-            { jokeValue: String -> save(jokeValue)  }
+            { jokeValue: Joke, stared: Boolean -> save(jokeValue, stared) }
         )
 
-        jokeCurrentSave = Joke.serializer().list
         if(savedInstanceState == null)
             jokeAdapter.onBottomReached()
         else {
@@ -57,10 +60,19 @@ class MainActivity : AppCompatActivity() {
                 jokeList.addAll(it)
             }
             jokeAdapter.setJokes(jokeList)
-            // equivalent to:
-            //  jokeList.addAll( Json.parse(jokeCurrentSave, savedInstanceState.getString(jokeState))) if none are null
+            jokeList.clear()
         }
 
+        val sharedPreferences = getSharedPreferences("Saved Jokes", Context.MODE_PRIVATE)
+        val savedJoke = sharedPreferences.getString("savedJoke","")
+        if(sharedPreferences.contains("savedJoke")){
+            savedJoke?.let {
+                Json.parse(jokeCurrentFavorite, it)
+            }?.let {
+                jokesSaved.addAll(it)
+            }
+            jokeList.addAll(jokesSaved)
+        }
 
         val jokeTouch = JokeTouchHelper(
             {position: Int -> jokeAdapter.onJokeRemoved(position)},
@@ -86,10 +98,10 @@ class MainActivity : AppCompatActivity() {
                 onNext = { newJoke: Joke -> jokeList.add(newJoke)},
                 onComplete = {
                     jokeAdapter.setJokes(jokeList)
-                    jokeList.clear()
                 }
             )
         )
+        jokeList.clear()
     }
 
     private fun share(jokeValue: String){
@@ -102,8 +114,20 @@ class MainActivity : AppCompatActivity() {
         startActivity(shareIntent)
     }
 
-    private fun save(jokeValue: String){
-
+    private fun save(jokeValue: Joke, stared: Boolean){
+        val sharedPreferences = getSharedPreferences("Saved Jokes", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        if(stared) {
+            if(!jokesSaved.contains(jokeValue))
+                jokesSaved.add(jokeValue)
+            else
+                jokeList.remove(jokeValue)
+        }
+        else {
+            jokesSaved.remove(jokeValue)
+        }
+        editor.putString("savedJoke",Json.stringify(jokeCurrentFavorite, jokesSaved))
+        editor.apply()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

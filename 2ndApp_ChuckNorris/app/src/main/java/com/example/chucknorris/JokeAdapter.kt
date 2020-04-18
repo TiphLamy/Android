@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class JokeAdapter(val onBottomReached: () -> Unit = {},
                   private val onShare: (jokeValue: String) -> Unit = {},
-                  private val onSave: (jokeValue: String) -> Unit = {}
+                  private val onSave: (jokeValue: Joke, stared: Boolean) -> Unit = { _: Joke, _: Boolean -> }
 ): RecyclerView.Adapter<JokeAdapter.JokeViewHolder>() {
 
     val listDeJoke = mutableListOf<Joke>()
@@ -49,7 +49,6 @@ class JokeAdapter(val onBottomReached: () -> Unit = {},
     fun onJokeRemoved(position: Int) {
         listDeJoke.removeAt(position)
         notifyItemRemoved(position)
-        notifyItemRangeChanged(position,itemCount)
     }
 
 }
