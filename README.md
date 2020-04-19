@@ -1,11 +1,11 @@
 # Introduction to Android
 
-Here is the work done after following an Android [course]([https://github.com/NicolasDuponchel/TeachingAndroid](https://github.com/NicolasDuponchel/TeachingAndroid)) at ESIEE Paris. 
+Here is the work done after following an Android [course](https://github.com/NicolasDuponchel/TeachingAndroid) at ESIEE Paris. 
 
 
 ## First application
 
-The [first application]([https://github.com/TiphLamy/Android/tree/master/FirstApp_Tutorial](https://github.com/TiphLamy/Android/tree/master/FirstApp)) is an introduction to Kotlin and Android Studio. 
+The [first application](https://github.com/TiphLamy/Android/tree/master/FirstApp) is an introduction to Kotlin and Android Studio. 
 
 
 ## Second application
